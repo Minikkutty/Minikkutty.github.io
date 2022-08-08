@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<body>
+<h1>What should be the heading???</h2>
+
+<canvas id="myChartOne" style="width:100%;max-width:600px"></canvas>
+<canvas id="myChartTwo" style="width:100%;max-width:600px"></canvas>
+
+<script>
+fetch('https://open.er-api.com/v6/latest/USD')
+  .then((response) => response.json())
+  .then((data) => {
+      
+      let xValues = Object.keys(data.rates).splice(0,10);
+      let yValues = Object.values(data.rates).splice(0,10);
+
+      let barColors = "red";
+
+function getRandomColor() {
+    let letters = '0123456789ABCDEF'.split('');
+    let color = '#';
+    for (let i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+let bg_colors = yValues.map( item => getRandomColor() );
+
+new Chart("myChartOne", {
+  type: "bar",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: bg_colors,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }],
+    }
+  }
+});
+
+new Chart("myChartTwo", {
+  type: "pie",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: bg_colors,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }],
+    }
+  }
+});
+    })
+</script>
+
+</body>
+</html>
+
+
