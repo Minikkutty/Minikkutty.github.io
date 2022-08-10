@@ -63,7 +63,7 @@
     fetch('https://bdat1004-03-07.herokuapp.com')
       .then((response) => response.json())
       .then((data) => {
-          let xValues = Object.keys(data.rates).splice(0,20);
+          let xValues = Object.keys(data.rates).splice(0, 20);
           let yValues = Object.values(data.rates).splice(0, 20);
           let element = document.getElementById("dropDown");
           for (let i = 0; i < xValues.length;i++) {
