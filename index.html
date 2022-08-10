@@ -1,78 +1,122 @@
 <!DOCTYPE html>
 <html>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<head>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: darkcyan;
+        }
+        .heading{
+            display: flex;
+            justify-content: center;
+        }
+        .content {
+            padding: 15px;
+            background-color: white;
+            border-radius: 5px;
+        }
+        .chartWrapper{
+            display: flex;
+        }
+        .paraContent{
+            padding:15px;
+        }
+        #dropdownValue {
+            font-weight: bold;
+        }
+    </style>
+</head>
 <body>
-<h1>What should be the heading???</h2>
-
-<canvas id="myChartOne" style="width:100%;max-width:600px"></canvas>
-<canvas id="myChartTwo" style="width:100%;max-width:600px"></canvas>
+    <div class="content">
+        <h1 class="heading">Cur-Rate</h2>
+        <div>
+            <label for="cars">Check currency rate 1 USD as a base</label>
+            <select id="dropDown" onchange="dropDownClicked()"></select>
+            <span id="dropdownValue"></span>
+        </div>
+        <br />
+        <br />
+        <div class="chartWrapper">
+            <canvas id="myChartOne" style="width:100%;max-width:600px"></canvas>
+            <canvas id="myChartTwo" style="width:100%;max-width:600px"></canvas>
+        </div>
+        <p class="paraContent">
+            Cur-Rate is our version of Currency Rate converter where the currencies of the world are converted in respective to USD. The website is updated with the
+            current rate so that you do not miss out on getting the best deal. Cur-Rate gives you the latest rate that is present for your exchange.
+        </p>
+    </div>
 
 <script>
-fetch('https://bdat1004-03-07.herokuapp.com/')
-  .then((response) => response.json())
-  .then((data) => {
-      
-      let xValues = Object.keys(data.rates).splice(0,10);
-      let yValues = Object.values(data.rates).splice(0,10);
-
-      let barColors = "red";
-
-function getRandomColor() {
-    let letters = '0123456789ABCDEF'.split('');
-    let color = '#';
-    for (let i = 0; i < 6; i++ ) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
-
-let bg_colors = yValues.map( item => getRandomColor() );
-
-new Chart("myChartOne", {
-  type: "bar",
-  data: {
-    labels: xValues,
-    datasets: [{
-      backgroundColor: bg_colors,
-      data: yValues
-    }]
-  },
-  options: {
-    legend: {display: false},
-    scales: {
-      yAxes: [{
-        ticks: {
-          beginAtZero: true
+    function getRandomColor() {
+        let letters = '0123456789ABCDEF'.split('');
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
         }
-      }],
+        return color;
     }
-  }
-});
-
-new Chart("myChartTwo", {
-  type: "pie",
-  data: {
-    labels: xValues,
-    datasets: [{
-      backgroundColor: bg_colors,
-      data: yValues
-    }]
-  },
-  options: {
-    legend: {display: false},
-    scales: {
-      yAxes: [{
-        ticks: {
-          beginAtZero: true
+    function dropDownClicked() {
+        let selectedValue = document.getElementById("dropDown").value;
+        document.getElementById("dropdownValue").innerHTML = selectedValue;
+    }
+    fetch('https://bdat1004-03-07.herokuapp.com')
+      .then((response) => response.json())
+      .then((data) => {
+          let xValues = Object.keys(data.rates).splice(0,10);
+          let yValues = Object.values(data.rates).splice(0, 10);
+          let element = document.getElementById("dropDown");
+          for (let i = 0; i < xValues.length;i++) {
+              console.log(xValues[i]);
+              console.log(data.rates[xValues[i]]);
+              let option = document.createElement("option");
+              option.value = data.rates[xValues[i]];
+              option.text = xValues[i];
+              element.add(option);
+          }
+          let bg_colors = yValues.map(item => getRandomColor());
+          new Chart("myChartOne", {
+              type: "bar",
+              data: {
+                labels: xValues,
+                datasets: [{
+                  backgroundColor: bg_colors,
+                  data: yValues
+                }]
+              },
+              options: {
+                legend: {display: false},
+                scales: {
+                  yAxes: [{
+                    ticks: {
+                      beginAtZero: true
+                    }
+                  }],
+                }
+              }
+          });
+          new Chart("myChartTwo", {
+      type: "pie",
+      data: {
+        labels: xValues,
+        datasets: [{
+          backgroundColor: bg_colors,
+          data: yValues
+        }]
+      },
+      options: {
+        legend: {display: false},
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }],
         }
-      }],
-    }
-  }
-});
-    })
+      }
+    });
+        })
 </script>
 
 </body>
 </html>
-
-
